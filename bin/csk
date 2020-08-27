@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# account identifier
+GOOGLE_ACCESS_ID='GOOGRDMQGVG37BVSPZX7XLQI'
+
+# base64-encoded JSON
+POLICY='eyJleHBpcmF0aW9uIjogIjIwMjEtMDEtMDFUMTI6MDA6MDAuMDAwWiIsCgogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiY29kZXNrdWxwdG9yLXVzZXIzMDUifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJGtleSIsICJ1c2VyMzA1Il0sCiAgICBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAidGV4dC94LXB5dGhvbiJdLAogICAgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY1NTM2XQogIF0KfQo='
+
+# base64-encoded signature of the policy
+# created with a key associated with the account described by the access ID
+SIGNATURE='RuoMn36XzwRS97unY4JB/wLWjY0='
+
+FILE="$1"
+NAME="${2:-$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 11 ; echo '')}"
+VERSION="${3:-0}"
+
+curl --fail -X POST \
+    -F "key=user305_${NAME}_${VERSION}.py" \
+    -F 'Content-Type=text/x-python' \
+    -F "GoogleAccessId=$GOOGLE_ACCESS_ID" \
+    -F "Policy=$POLICY" \
+    -F "Signature=$SIGNATURE" \
+    -F "file=@$FILE" \
+    'https://codeskulptor-user305.commondatastorage.googleapis.com/'
+
+STATUS_CODE="$?"
+if [ "$STATUS_CODE" -eq 0 ]; then
+    echo "https://py3.codeskulptor.org/#user305_${NAME}_${VERSION}.py"
+else
+    echo 'An error occurred'; exit "$STATUS_CODE";
+fi
