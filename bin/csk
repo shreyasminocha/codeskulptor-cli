@@ -22,6 +22,11 @@ upload() {
     # created with a key associated with the account described by the access ID
     SIGNATURE='RuoMn36XzwRS97unY4JB/wLWjY0='
 
+    # These form fields were lifted from the <form> on CodeSkulptor.
+    # Should the values of those fields change, these would need to be updated.
+
+    # See also: https://cloud.google.com/storage/docs/xml-api/post-object
+
     curl --fail -X POST \
         -F "key=user305_${NAME}_${VERSION}.py" \
         -F 'Content-Type=text/x-python' \
@@ -40,6 +45,61 @@ upload() {
     fi
 }
 
+help_text() {
+    cat << \EOT
+csk — CodeSkulptor unofficial CLI
+
+USAGE:
+    csk SUBCOMMAND FILE [NAME] [VERSION=0]
+
+    NAME and VERSION as in /#user305_[NAME]_[VERSION]
+
+DESCRIPTION:
+    csk is a CLI tool to upload files to and download files from CodeSkulptor.
+
+SUBCOMMANDS:
+    u | upload			Upload files to CodeSkulptor
+
+	    			The file (or STDIN if FILE is -), will be uploaded.
+	    			A CodeSkulptor URL will be outputted to STDOUT.
+
+    d | download		Download files from CodeSkulptor
+
+    				The file will be downloaded and saved to the path specified
+    				or outputted to STDOUT if FILE is -.
+
+EXAMPLES:
+    Download /#user305_U0CqjtUA8X_0.py:
+        $ csk d file.py U0CqjtUA8X
+
+    Download /#user305_U0CqjtUA8X_4.py:
+        $ csk d file.py U0CqjtUA8X 4
+
+    Output /#user305_U0CqjtUA8X_0.py to STDOUT:
+        $ csk d - U0CqjtUA8X
+
+    Upload example.py to a random name:
+        $ csk u example.py
+        https://py3.codeskulptor.org/#user305_Xo0qphJfsM2_0.py
+
+    Upload example.py to /#user305_example_0.py:
+        $ csk u example.py example
+        https://py3.codeskulptor.org/#user305_example_0.py
+
+    Upload example.py to /#user305_example_6.py:
+        $ csk u example.py example 6
+        https://py3.codeskulptor.org/#user305_example_6.py
+
+    Upload from STDIN:
+        $ csk u -
+        https://py3.codeskulptor.org/#user305_Xo0qphJfsM2_0.py
+
+    Upload STDIN to /#user305_example_0.py:
+        $ csk u - example
+        https://py3.codeskulptor.org/#user305_example_0.py
+EOT
+}
+
 case "$COMMAND" in
     d | dl | down | download)
         download
@@ -49,8 +109,14 @@ case "$COMMAND" in
         upload
     ;;
 
+    help | -h | --help)
+        help_text
+    ;;
+
     * )
         echo "Invalid command '$COMMAND'"
+        echo
+        help_text
         exit 1
     ;;
 esac
