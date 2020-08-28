@@ -51,5 +51,6 @@ case "$COMMAND" in
 
     * )
         echo "Invalid command '$COMMAND'"
+        exit 1
     ;;
 esac
