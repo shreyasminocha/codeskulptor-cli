@@ -86,17 +86,9 @@ EXAMPLES:
         $ csk u example.py example
         https://py3.codeskulptor.org/#user305_example_0.py
 
-    Upload example.py to /#user305_example_6.py:
-        $ csk u example.py example 6
-        https://py3.codeskulptor.org/#user305_example_6.py
-
     Upload from STDIN:
         $ csk u -
         https://py3.codeskulptor.org/#user305_Xo0qphJfsM2_0.py
-
-    Upload STDIN to /#user305_example_0.py:
-        $ csk u - example
-        https://py3.codeskulptor.org/#user305_example_0.py
 EOT
 }
 
