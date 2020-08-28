@@ -47,48 +47,44 @@ upload() {
 
 help_text() {
     cat << \EOT
-csk — CodeSkulptor unofficial CLI
+NAME
+    csk — CodeSkulptor unofficial CLI
 
-USAGE:
-    csk SUBCOMMAND FILE [NAME] [VERSION=0]
-
-    NAME and VERSION as in /#user305_[NAME]_[VERSION]
-
-DESCRIPTION:
+DESCRIPTION
     csk is a CLI tool to upload files to and download files from CodeSkulptor.
 
-SUBCOMMANDS:
-    u | upload			Upload files to CodeSkulptor
+USAGE
+    csk SUBCOMMAND FILE [NAME] [VERSION=0]
 
-	    			The file (or STDIN if FILE is -), will be uploaded.
-	    			A CodeSkulptor URL will be outputted to STDOUT.
+SUBCOMMANDS
+    u | upload		Upload files to CodeSkulptor
 
-    d | download		Download files from CodeSkulptor
+        The file (or STDIN if FILE is -), will be uploaded.
+        A CodeSkulptor URL will be outputted to STDOUT.
 
-    				The file will be downloaded and saved to the path specified
-    				or outputted to STDOUT if FILE is -.
+    d | download	Download files from CodeSkulptor
 
-EXAMPLES:
+        The file will be downloaded and saved to the path specified
+        or outputted to STDOUT if FILE is -.
+
+EXAMPLES
     Download /#user305_U0CqjtUA8X_0.py:
+
         $ csk d file.py U0CqjtUA8X
 
-    Download /#user305_U0CqjtUA8X_4.py:
-        $ csk d file.py U0CqjtUA8X 4
-
     Output /#user305_U0CqjtUA8X_0.py to STDOUT:
+
         $ csk d - U0CqjtUA8X
 
     Upload example.py to a random name:
+
         $ csk u example.py
         https://py3.codeskulptor.org/#user305_Xo0qphJfsM2_0.py
 
     Upload example.py to /#user305_example_0.py:
+
         $ csk u example.py example
         https://py3.codeskulptor.org/#user305_example_0.py
-
-    Upload from STDIN:
-        $ csk u -
-        https://py3.codeskulptor.org/#user305_Xo0qphJfsM2_0.py
 EOT
 }
 
