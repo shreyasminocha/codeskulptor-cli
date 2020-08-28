@@ -49,6 +49,6 @@ case "$COMMAND" in
     ;;
 
     * )
-        echo "Invalid command `$COMMAND`"
+        echo "Invalid command '$COMMAND'"
     ;;
 esac
