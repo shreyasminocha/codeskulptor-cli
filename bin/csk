@@ -35,7 +35,8 @@ upload() {
     if [ "$STATUS_CODE" -eq 0 ]; then
         echo "https://py3.codeskulptor.org/#user305_${NAME}_${VERSION}.py"
     else
-        echo 'An error occurred'; exit "$STATUS_CODE";
+        echo 'An error occurred while uploading the file'
+        exit "$STATUS_CODE"
     fi
 }
 
