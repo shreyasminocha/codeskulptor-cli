@@ -1,31 +1,54 @@
 #!/usr/bin/env bash
 
-# account identifier
-GOOGLE_ACCESS_ID='GOOGRDMQGVG37BVSPZX7XLQI'
+COMMAND="$1"
+FILE="$2"
+NAME="${3:-$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 11 ; echo '')}"
+VERSION="${4:-0}"
 
-# base64-encoded JSON
-POLICY='eyJleHBpcmF0aW9uIjogIjIwMjEtMDEtMDFUMTI6MDA6MDAuMDAwWiIsCgogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiY29kZXNrdWxwdG9yLXVzZXIzMDUifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJGtleSIsICJ1c2VyMzA1Il0sCiAgICBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAidGV4dC94LXB5dGhvbiJdLAogICAgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY1NTM2XQogIF0KfQo='
+BUCKET_URI="https://codeskulptor-user305.commondatastorage.googleapis.com"
 
-# base64-encoded signature of the policy
-# created with a key associated with the account described by the access ID
-SIGNATURE='RuoMn36XzwRS97unY4JB/wLWjY0='
+download() {
+    curl -s "$BUCKET_URI/user305_${NAME}_${VERSION}.py" -o "$FILE"
+}
 
-FILE="$1"
-NAME="${2:-$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 11 ; echo '')}"
-VERSION="${3:-0}"
+upload() {
+    # account identifier
+    GOOGLE_ACCESS_ID='GOOGRDMQGVG37BVSPZX7XLQI'
 
-curl --fail -X POST \
-    -F "key=user305_${NAME}_${VERSION}.py" \
-    -F 'Content-Type=text/x-python' \
-    -F "GoogleAccessId=$GOOGLE_ACCESS_ID" \
-    -F "Policy=$POLICY" \
-    -F "Signature=$SIGNATURE" \
-    -F "file=@$FILE" \
-    'https://codeskulptor-user305.commondatastorage.googleapis.com/'
+    # base64-encoded JSON
+    POLICY='eyJleHBpcmF0aW9uIjogIjIwMjEtMDEtMDFUMTI6MDA6MDAuMDAwWiIsCgogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiY29kZXNrdWxwdG9yLXVzZXIzMDUifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJGtleSIsICJ1c2VyMzA1Il0sCiAgICBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAidGV4dC94LXB5dGhvbiJdLAogICAgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY1NTM2XQogIF0KfQo='
 
-STATUS_CODE="$?"
-if [ "$STATUS_CODE" -eq 0 ]; then
-    echo "https://py3.codeskulptor.org/#user305_${NAME}_${VERSION}.py"
-else
-    echo 'An error occurred'; exit "$STATUS_CODE";
-fi
+    # base64-encoded signature of the policy
+    # created with a key associated with the account described by the access ID
+    SIGNATURE='RuoMn36XzwRS97unY4JB/wLWjY0='
+
+    curl --fail -X POST \
+        -F "key=user305_${NAME}_${VERSION}.py" \
+        -F 'Content-Type=text/x-python' \
+        -F "GoogleAccessId=$GOOGLE_ACCESS_ID" \
+        -F "Policy=$POLICY" \
+        -F "Signature=$SIGNATURE" \
+        -F "file=@$FILE" \
+        "$BUCKET_URI"
+
+    STATUS_CODE="$?"
+    if [ "$STATUS_CODE" -eq 0 ]; then
+        echo "https://py3.codeskulptor.org/#user305_${NAME}_${VERSION}.py"
+    else
+        echo 'An error occurred'; exit "$STATUS_CODE";
+    fi
+}
+
+case "$COMMAND" in
+    d | dl | down | download)
+        download
+    ;;
+
+    u | ul | up | upload)
+        upload
+    ;;
+
+    * )
+        echo "Invalid command `$COMMAND`"
+    ;;
+esac
