@@ -7,13 +7,15 @@ Unofficial command-line interface for [CodeSkulptor](https://py3.codeskulptor.or
 ```sh
 git clone https://github.com/shreyasminocha/csk-cli
 cd csk-cli
-install ./bin/csk /usr/local/bin/csk
+sudo install ./bin/csk /usr/local/bin/csk
+sudo install ./csk.1 /usr/local/share/man/man1/csk.1 # optionally install man page
 ```
 
 Uninstall:
 
 ```sh
 sudo rm /usr/local/bin/csk
+sudo rm /usr/local/share/man/man1/csk.1
 ```
 
 ## Usage
@@ -66,6 +68,14 @@ csk upload example.py example_7 # alternative
 
 # Upload from STDIN to a random URL
 csk upload -
+```
+
+## Development
+
+The man page is generated using [txt2man](https://github.com/mvertes/txt2man):
+
+```sh
+./bin/csk --help | txt2man -t 'CodeSkulptor CLI' -s 1 > csk.1
 ```
 
 ## License
