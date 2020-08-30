@@ -3,12 +3,30 @@
 COMMAND="$1"
 FILE="$2"
 NAME="${3:-$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 11 ; echo '')}"
-VERSION="${4:-0}"
 
-BUCKET_URI="https://codeskulptor-user305.commondatastorage.googleapis.com"
+OPTIND=4 # COMMAND, FILE, NAME, ...options
+while getopts ':b:v:' option; do
+    case "$option" in
+        b)
+            BUCKET="$OPTARG"
+            ;;
+        v)
+            VERSION="$OPTARG"
+            ;;
+    esac
+done
+
+BUCKET="${BUCKET:-user305}"
+BUCKET_URI="https://codeskulptor-${BUCKET}.commondatastorage.googleapis.com"
+
+if [ -z ${VERSION+x} ]; then
+    REMOTE_FILE="${BUCKET}_${NAME}.py"
+else
+    REMOTE_FILE="${BUCKET}_${NAME}_${VERSION}.py"
+fi
 
 download() {
-    curl -s "$BUCKET_URI/user305_${NAME}_${VERSION}.py" -o "$FILE"
+    curl -s "$BUCKET_URI/$REMOTE_FILE" -o "$FILE"
 }
 
 upload() {
@@ -28,7 +46,7 @@ upload() {
     # See also: https://cloud.google.com/storage/docs/xml-api/post-object
 
     curl --fail -X POST \
-        -F "key=user305_${NAME}_${VERSION}.py" \
+        -F "key=$REMOTE_FILE" \
         -F 'Content-Type=text/x-python' \
         -F "GoogleAccessId=$GOOGLE_ACCESS_ID" \
         -F "Policy=$POLICY" \
@@ -38,7 +56,7 @@ upload() {
 
     STATUS_CODE="$?"
     if [ "$STATUS_CODE" -eq 0 ]; then
-        echo "https://py3.codeskulptor.org/#user305_${NAME}_${VERSION}.py"
+        echo "https://py3.codeskulptor.org/#$REMOTE_FILE"
     else
         echo 'An error occurred while uploading the file'
         exit "$STATUS_CODE"
@@ -54,7 +72,7 @@ DESCRIPTION
     csk is a CLI tool to upload files to and download files from CodeSkulptor.
 
 USAGE
-    csk SUBCOMMAND FILE [NAME] [VERSION=0]
+    csk SUBCOMMAND FILE [NAME] [OPTIONS]
 
 SUBCOMMANDS
     u | upload		Upload files to CodeSkulptor
@@ -67,23 +85,31 @@ SUBCOMMANDS
         The file will be downloaded and saved to the path specified
         or outputted to STDOUT if FILE is -.
 
+OPTIONS
+    -b		[str]	Bucket ('user305' by default)
+    -v		[int]	File version
+
 EXAMPLES
     Download /#user305_U0CqjtUA8X_0.py:
 
-        $ csk d file.py U0CqjtUA8X
+        $ csk d file.py U0CqjtUA8X -v 0
+
+    Download /#examples140_modimport.py:
+
+        $ csk d file.py modimport -b examples140
 
     Output /#user305_U0CqjtUA8X_0.py to STDOUT:
 
-        $ csk d - U0CqjtUA8X
+        $ csk d - U0CqjtUA8X -v 0
 
     Upload example.py to a random name:
 
         $ csk u example.py
-        https://py3.codeskulptor.org/#user305_Xo0qphJfsM2_0.py
+        https://py3.codeskulptor.org/#user305_Xo0qphJfsM2.py
 
     Upload example.py to /#user305_example_0.py:
 
-        $ csk u example.py example
+        $ csk u example.py example -v 0
         https://py3.codeskulptor.org/#user305_example_0.py
 EOT
 }
