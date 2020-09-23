@@ -19,10 +19,15 @@ done
 BUCKET="${BUCKET:-user305}"
 BUCKET_URI="https://codeskulptor-${BUCKET}.commondatastorage.googleapis.com"
 
+EXT="py"
+if [ $BUCKET == "comp140" ]; then
+    EXT="py3"
+fi
+
 if [ -z ${VERSION+x} ]; then
-    REMOTE_FILE="${BUCKET}_${NAME}.py"
+    REMOTE_FILE="${BUCKET}_${NAME}.${EXT}"
 else
-    REMOTE_FILE="${BUCKET}_${NAME}_${VERSION}.py"
+    REMOTE_FILE="${BUCKET}_${NAME}_${VERSION}.${EXT}"
 fi
 
 download() {
