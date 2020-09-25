@@ -2,6 +2,13 @@
 
 Unofficial command-line interface for [CodeSkulptor](https://py3.codeskulptor.org).
 
+## Features
+
+- Downloading user-created files
+- Downloading instructor-created files (`comp140`, `examples140`, …)
+- Uploading to random URIs (similar to the web interface)
+- Uploading to vanity URIs ✨✨
+
 ## Installation
 
 ```sh
