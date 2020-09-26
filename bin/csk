@@ -38,15 +38,25 @@ upload() {
     # account identifier
     GOOGLE_ACCESS_ID='GOOGRDMQGVG37BVSPZX7XLQI'
 
-    # base64-encoded JSON
-    POLICY='eyJleHBpcmF0aW9uIjogIjIwMjEtMDEtMDFUMTI6MDA6MDAuMDAwWiIsCgogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiY29kZXNrdWxwdG9yLXVzZXIzMDUifSwKICAgIFsic3RhcnRzLXdpdGgiLCAiJGtleSIsICJ1c2VyMzA1Il0sCiAgICBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAidGV4dC94LXB5dGhvbiJdLAogICAgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY1NTM2XQogIF0KfQo='
+    # decoded (base64) from `form#codeform input#policy` on CodeSkulptor
+    # do not change *at all* unless you know what you're doing
+    POLICY='{"expiration": "2021-01-01T12:00:00.000Z",
+
+  "conditions": [
+    {"bucket": "codeskulptor-user305"},
+    ["starts-with", "$key", "user305"],
+    ["eq", "$Content-Type", "text/x-python"],
+    ["content-length-range", 0, 65536]
+  ]
+}'
 
     # base64-encoded signature of the policy
     # created with a key associated with the account described by the access ID
     SIGNATURE='RuoMn36XzwRS97unY4JB/wLWjY0='
 
-    # These form fields were lifted from the <form> on CodeSkulptor.
-    # Should the values of those fields change, these would need to be updated.
+    # These values were lifted from fields in `form#codeform` on CodeSkulptor.
+    # Should the values of those fields change, these would also need to be
+    # updated.
 
     # See also: https://cloud.google.com/storage/docs/xml-api/post-object
 
@@ -54,7 +64,7 @@ upload() {
         -F "key=$REMOTE_FILE" \
         -F 'Content-Type=text/x-python' \
         -F "GoogleAccessId=$GOOGLE_ACCESS_ID" \
-        -F "Policy=$POLICY" \
+        -F "Policy=$(echo "$POLICY" | base64 -w 0)" \
         -F "Signature=$SIGNATURE" \
         -F "file=@$FILE" \
         "$BUCKET_URI"
