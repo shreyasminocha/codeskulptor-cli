@@ -16,7 +16,7 @@ while getopts ':b:v:' option; do
     esac
 done
 
-BUCKET="${BUCKET:-user305}"
+BUCKET="${BUCKET:-user306}"
 BUCKET_URI="https://codeskulptor-${BUCKET}.commondatastorage.googleapis.com"
 
 EXT="py"
@@ -36,23 +36,24 @@ download() {
 
 upload() {
     # account identifier
-    GOOGLE_ACCESS_ID='GOOGRDMQGVG37BVSPZX7XLQI'
+    GOOGLE_ACCESS_ID='GOOGXAAMGSTWEXTMWEN3GH7F'
 
     # decoded (base64) from `form#codeform input#policy` on CodeSkulptor
     # do not change *at all* unless you know what you're doing
-    POLICY='{"expiration": "2021-01-01T12:00:00.000Z",
+    POLICY='{"expiration": "2022-01-01T12:00:00.000Z",
 
   "conditions": [
-    {"bucket": "codeskulptor-user305"},
-    ["starts-with", "$key", "user305"],
+    {"bucket": "codeskulptor-user306"},
+    ["starts-with", "$key", "user306"],
     ["eq", "$Content-Type", "text/x-python"],
     ["content-length-range", 0, 65536]
   ]
-}'
+}
+'
 
     # base64-encoded signature of the policy
     # created with a key associated with the account described by the access ID
-    SIGNATURE='RuoMn36XzwRS97unY4JB/wLWjY0='
+    SIGNATURE='WcXIAnNTPO7Wgf60wI5D5gw6c50='
 
     # These values were lifted from fields in `form#codeform` on CodeSkulptor.
     # Should the values of those fields change, these would also need to be
@@ -64,7 +65,7 @@ upload() {
         -F "key=$REMOTE_FILE" \
         -F 'Content-Type=text/x-python' \
         -F "GoogleAccessId=$GOOGLE_ACCESS_ID" \
-        -F "Policy=$(echo "$POLICY" | base64 -w 0)" \
+        -F "Policy=$(echo -n "$POLICY" | base64 -w 0)" \
         -F "Signature=$SIGNATURE" \
         -F "file=@$FILE" \
         "$BUCKET_URI"
@@ -101,11 +102,11 @@ SUBCOMMANDS
         or outputted to STDOUT if FILE is -.
 
 OPTIONS
-    -b		[str]	Bucket ('user305' by default)
+    -b		[str]	Bucket ('user306' by default)
     -v		[int]	File version
 
 EXAMPLES
-    Download /#user305_U0CqjtUA8X_0.py:
+    Download /#user306_U0CqjtUA8X_0.py:
 
         $ csk d file.py U0CqjtUA8X -v 0
 
@@ -113,19 +114,19 @@ EXAMPLES
 
         $ csk d file.py modimport -b examples140
 
-    Output /#user305_U0CqjtUA8X_0.py to STDOUT:
+    Output /#user306_U0CqjtUA8X_0.py to STDOUT:
 
         $ csk d - U0CqjtUA8X -v 0
 
     Upload example.py to a random name:
 
         $ csk u example.py
-        https://py3.codeskulptor.org/#user305_Xo0qphJfsM2.py
+        https://py3.codeskulptor.org/#user306_Xo0qphJfsM2.py
 
-    Upload example.py to /#user305_example_0.py:
+    Upload example.py to /#user306_example_0.py:
 
         $ csk u example.py example -v 0
-        https://py3.codeskulptor.org/#user305_example_0.py
+        https://py3.codeskulptor.org/#user306_example_0.py
 EOT
 }
 
